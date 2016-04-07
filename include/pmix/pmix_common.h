@@ -1,6 +1,7 @@
 /* include/pmix/pmix_common.h.  Generated from pmix_common.h.in by configure.  */
 /*
  * Copyright (c) 2013-2014 Intel, Inc. All rights reserved
+ * Copyright (c) 2016 International Business Machines Corp., All rights reserved
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -335,12 +336,9 @@ typedef struct {
 
 
 
-/****    PMIX VALUE STRUCT    ****/
-struct pmix_info_t;
-
 typedef struct {
     size_t size;
-    struct pmix_info_t *array;
+    struct pmix_info_s *array;
 } pmix_info_array_t;
 /* NOTE: operations can supply a collection of values under
  * a single key by passing a pmix_value_t containing an
@@ -372,6 +370,13 @@ typedef struct {
         pmix_byte_object_t bo;
     } data;
 } pmix_value_t;
+
+/****    PMIX INFO STRUCT    ****/
+typedef struct pmix_info_s {
+    char key[PMIX_MAX_KEYLEN+1];  // ensure room for the NULL terminator
+    pmix_value_t value;
+} pmix_info_t;
+
 /* allocate and initialize a specified number of value structs */
 #define PMIX_VALUE_CREATE(m, n)                                         \
     do {                                                                \
@@ -447,12 +452,6 @@ extern void pmix_value_load(pmix_value_t *v, void *data,
 
 
 
-
-/****    PMIX INFO STRUCT    ****/
-typedef struct {
-    char key[PMIX_MAX_KEYLEN+1];  // ensure room for the NULL terminator
-    pmix_value_t value;
-} pmix_info_t;
 
 /* utility macros for working with pmix_info_t structs */
 #define PMIX_INFO_CREATE(m, n)                                  \
